@@ -1,0 +1,101 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Inter:wght@400;500;600;700&display=swap');
+@import "tailwindcss";
+:root {
+  color-scheme: light;
+  --paper: #F5F2EA;
+  --paper-card: #FFFFFF;
+  --ink: #1D2B2E;
+  --ink-soft: #55635F;
+  --rule: #DAD3C2;
+  --accent: #1F6F5C;
+  --accent-strong: #144F41;
+  --accent-tint: #E4EFE9;
+  --gold: #B8862E;
+  --gold-tint: #F3E7D2;
+  --danger: #B23A34;
+  --danger-tint: #F6E4E2;
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
+}
+
+h1, h2, .font-display {
+  font-family: "Source Serif 4", Georgia, serif;
+}
+
+.app-shell { max-width: 1280px; margin: 0 auto; }
+
+.app-header {
+  border-bottom: 1px solid var(--rule);
+  padding: 1.75rem 1.5rem 1.25rem;
+}
+
+.app-title { font-size: 1.75rem; font-weight: 600; letter-spacing: -0.01em; color: var(--ink); }
+.app-subtitle { color: var(--ink-soft); font-size: 0.9rem; margin-top: 0.25rem; }
+
+.card {
+  background: var(--paper-card);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+.card-title { font-family: "Source Serif 4", Georgia, serif; font-size: 1.15rem; font-weight: 600; color: var(--ink); margin-bottom: 0.15rem; }
+.card-hint { font-size: 0.8rem; color: var(--ink-soft); margin-bottom: 0.75rem; }
+.card-row { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 0.75rem; }
+
+.field {
+  width: 100%;
+  border: 1px solid var(--rule);
+  background: #FFFFFF;
+  color: var(--ink);
+  border-radius: 3px;
+  padding: 0.5rem 0.7rem;
+  font-size: 0.875rem;
+  transition: border-color 0.15s ease;
+}
+.field:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-tint); }
+.field::placeholder { color: #9CA39E; }
+.field-label { display: grid; gap: 0.3rem; font-size: 0.8rem; color: var(--ink-soft); }
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem;
+  font-size: 0.875rem; font-weight: 600; padding: 0.55rem 1rem; border-radius: 3px;
+  transition: background 0.15s ease, opacity 0.15s ease; cursor: pointer;
+}
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn-primary { background: var(--accent); color: #fff; }
+.btn-primary:hover:not(:disabled) { background: var(--accent-strong); }
+.btn-ghost { background: transparent; border: 1px solid var(--rule); color: var(--ink-soft); }
+.btn-ghost:hover:not(:disabled) { border-color: var(--ink-soft); color: var(--ink); }
+.btn-danger-text { background: transparent; color: var(--danger); font-size: 0.8rem; font-weight: 500; padding: 0.2rem 0; }
+.btn-add { background: var(--accent-tint); color: var(--accent-strong); font-size: 0.8rem; }
+.btn-add:hover:not(:disabled) { background: #d5e8df; }
+
+.entry { border: 1px solid var(--rule); border-radius: 3px; padding: 1rem; margin-bottom: 0.9rem; background: #FBFAF6; }
+
+.chip { display: inline-flex; font-size: 0.72rem; padding: 0.2rem 0.55rem; border-radius: 999px; font-weight: 500; }
+.chip-good { background: var(--accent-tint); color: var(--accent-strong); }
+.chip-warn { background: var(--gold-tint); color: #7A5A1E; }
+.chip-bad { background: var(--danger-tint); color: var(--danger); }
+
+.score-seal {
+  width: 92px; height: 92px; border-radius: 50%; border: 3px solid var(--gold);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  background: var(--gold-tint); flex-shrink: 0;
+}
+.score-seal .num { font-family: "Source Serif 4", Georgia, serif; font-size: 1.6rem; font-weight: 700; line-height: 1; color: var(--ink); }
+.score-seal .of { font-size: 0.6rem; color: var(--ink-soft); }
+
+.check-row { display: flex; gap: 0.5rem; font-size: 0.83rem; padding: 0.3rem 0; align-items: flex-start; }
+.check-row .dot { flex-shrink: 0; margin-top: 0.2rem; }
+
+.resume-sheet {
+  background: #FFFFFF;
+  box-shadow: 0 1px 3px rgba(29,43,46,0.08), 0 8px 24px rgba(29,43,46,0.08);
+  border: 1px solid var(--rule);
+}
