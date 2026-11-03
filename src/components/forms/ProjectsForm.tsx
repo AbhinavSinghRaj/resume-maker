@@ -1,9 +1,12 @@
 "use client";
 
 import { useResumeStore } from "@/store/resumeStore";
+import BulletList from "./BulletList";
+import EntryControls from "./EntryControls";
+import ListInput from "./ListInput";
 
 export default function ProjectsForm() {
-  const { resume, addProject, updateProject, removeProject } = useResumeStore();
+  const { resume, addProject, updateProject, removeProject, moveEntry } = useResumeStore();
 
   return (
     <div className="card">
@@ -13,47 +16,52 @@ export default function ProjectsForm() {
       </div>
 
       <div className="grid gap-3">
-        {resume.projects.map((p) => (
+        {resume.projects.map((p, idx) => (
           <div key={p.id} className="entry grid gap-3">
-            <div className="grid grid-cols-2 gap-3">
-              <input
-                placeholder="Project name"
-                value={p.name}
-                onChange={(e) => updateProject(p.id, { name: e.target.value })}
-                className="field"
-              />
-              <input
-                placeholder="URL (optional)"
-                value={p.url ?? ""}
-                onChange={(e) => updateProject(p.id, { url: e.target.value })}
-                className="field"
-              />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <label className="field-label">
+                Project name
+                <input
+                  placeholder="e.g. Expense Tracker"
+                  value={p.name}
+                  onChange={(e) => updateProject(p.id, { name: e.target.value })}
+                  className="field"
+                />
+              </label>
+              <label className="field-label">
+                URL (optional)
+                <input
+                  placeholder="e.g. github.com/you/project"
+                  value={p.url ?? ""}
+                  onChange={(e) => updateProject(p.id, { url: e.target.value })}
+                  className="field"
+                />
+              </label>
             </div>
 
-            <input
-              placeholder="Tech stack, comma se separate (e.g. React, Node.js, MongoDB)"
-              value={p.techStack.join(", ")}
-              onChange={(e) =>
-                updateProject(p.id, {
-                  techStack: e.target.value.split(",").map((s) => s.trim()).filter(Boolean),
-                })
-              }
-              className="field"
-            />
-
             <label className="field-label">
-              Bullets (ek line = ek bullet)
-              <textarea
-                rows={4}
-                value={p.bullets.join("\n")}
-                onChange={(e) => updateProject(p.id, { bullets: e.target.value.split("\n") })}
-                className="field"
+              Tech stack (comma-separated)
+              <ListInput
+                placeholder="e.g. React, Node.js, MongoDB"
+                value={p.techStack}
+                onChange={(techStack) => updateProject(p.id, { techStack })}
               />
             </label>
 
-            <button onClick={() => removeProject(p.id)} className="btn-danger-text justify-self-end">
-              Remove
-            </button>
+            <BulletList
+              bullets={p.bullets}
+              onChange={(bullets) => updateProject(p.id, { bullets })}
+              context={{ title: p.name, company: "" }}
+            />
+
+            <EntryControls
+              index={idx}
+              count={resume.projects.length}
+              onMove={(to) => moveEntry("projects", idx, to)}
+              onRemove={() => removeProject(p.id)}
+              label="project"
+              confirm={!!(p.name || p.bullets.some((b) => b.trim()))}
+            />
           </div>
         ))}
       </div>

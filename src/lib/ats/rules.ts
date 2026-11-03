@@ -53,7 +53,7 @@ export function runRuleChecks(r: Resume): CheckResult[] {
     passed: contactOk,
     severity: "critical",
     weight: 10,
-    message: "Name, email, phone aur location sab bharo. Ye body me jayega, header me nahi.",
+    message: "Fill in name, email, phone and location.",
   });
 
   add({
@@ -62,7 +62,7 @@ export function runRuleChecks(r: Resume): CheckResult[] {
     passed: !!(c.linkedin || c.github || c.portfolio),
     severity: "tip",
     weight: 3,
-    message: "Kam se kam ek professional link (LinkedIn/GitHub) add karo.",
+    message: "Add at least one professional link (LinkedIn or GitHub).",
   });
 
   // 2. Required sections
@@ -72,7 +72,7 @@ export function runRuleChecks(r: Resume): CheckResult[] {
     passed: r.experience.length > 0 || r.projects.length > 0,
     severity: "critical",
     weight: 12,
-    message: "Experience ya Projects section chahiye (freshers ke liye Projects).",
+    message: "Add an Experience or Projects section (freshers can use Projects).",
   });
   add({
     id: "education-present",
@@ -80,7 +80,7 @@ export function runRuleChecks(r: Resume): CheckResult[] {
     passed: r.education.length > 0,
     severity: "critical",
     weight: 8,
-    message: "Education section add karo.",
+    message: "Add your education.",
   });
   add({
     id: "skills-present",
@@ -88,7 +88,7 @@ export function runRuleChecks(r: Resume): CheckResult[] {
     passed: r.skills.flatMap((s) => s.items).length >= 5,
     severity: "critical",
     weight: 10,
-    message: "Skills section me kam se kam 5 hard skills list karo.",
+    message: "List at least 5 hard skills in the Skills section.",
   });
 
   // 3. Summary
@@ -99,7 +99,7 @@ export function runRuleChecks(r: Resume): CheckResult[] {
     passed: summaryWords >= 30 && summaryWords <= 80,
     severity: "warning",
     weight: 5,
-    message: `Summary ${summaryWords} words ka hai. 30-80 words ideal hai.`,
+    message: `Your summary is ${summaryWords} words. Aim for 30-80.`,
   });
 
   // 4. Bullet quality
@@ -113,7 +113,7 @@ export function runRuleChecks(r: Resume): CheckResult[] {
     passed: verbRatio >= 0.8,
     severity: "warning",
     weight: 10,
-    message: `${Math.round(verbRatio * 100)}% bullets action verb se shuru hote hain. 80%+ target karo.`,
+    message: `${Math.round(verbRatio * 100)}% of bullets start with an action verb. Aim for 80%+.`,
   });
 
   const withNumbers = bullets.filter((b) => /\d/.test(b)).length;
@@ -124,7 +124,7 @@ export function runRuleChecks(r: Resume): CheckResult[] {
     passed: numRatio >= 0.5,
     severity: "warning",
     weight: 10,
-    message: `${Math.round(numRatio * 100)}% bullets me numbers hain. Kam se kam 50% me % / count / time saved add karo.`,
+    message: `${Math.round(numRatio * 100)}% of bullets include a number. Add %, counts or time saved to at least half.`,
   });
 
   const badLength = bullets.filter((b) => {
@@ -137,7 +137,7 @@ export function runRuleChecks(r: Resume): CheckResult[] {
     passed: bullets.length > 0 && badLength / bullets.length <= 0.2,
     severity: "tip",
     weight: 4,
-    message: `${badLength} bullets bahut chhote ya bade hain. 1-2 lines rakho.`,
+    message: `${badLength} bullets are too short or too long. Keep each to 1-2 lines.`,
   });
 
   // 5. Date consistency (schema already YYYY-MM enforce karta hai, yahan order/gap check)
@@ -150,7 +150,7 @@ export function runRuleChecks(r: Resume): CheckResult[] {
     passed: !dateIssue,
     severity: "critical",
     weight: 6,
-    message: "Kisi role ka end date start date se pehle hai.",
+    message: "A role has an end date before its start date.",
   });
 
   // 6. Length
@@ -161,7 +161,7 @@ export function runRuleChecks(r: Resume): CheckResult[] {
     passed: totalWords >= 250 && totalWords <= 900,
     severity: "warning",
     weight: 6,
-    message: `Resume ~${totalWords} words ka hai. 250-900 (1-2 pages) ideal.`,
+    message: `Your resume is ~${totalWords} words. 250-900 (1-2 pages) is ideal.`,
   });
 
   // 7. Reverse-chronological order
@@ -173,7 +173,7 @@ export function runRuleChecks(r: Resume): CheckResult[] {
     passed: orderOk,
     severity: "warning",
     weight: 4,
-    message: "Latest experience sabse upar rakho.",
+    message: "Put your most recent experience first.",
   });
 
   return results;

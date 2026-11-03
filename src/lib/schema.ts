@@ -81,6 +81,7 @@ export type Education = z.infer<typeof EducationSchema>;
 export type SkillGroup = z.infer<typeof SkillGroupSchema>;
 export type Project = z.infer<typeof ProjectSchema>;
 export type Certification = z.infer<typeof CertificationSchema>;
+export type CustomSection = z.infer<typeof CustomSectionSchema>;
 // AI ke JD analysis ka output shape
 export const JDAnalysisSchema = z.object({
   jobTitle: z.string(),

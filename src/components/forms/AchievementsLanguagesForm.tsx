@@ -1,6 +1,7 @@
 "use client";
 
 import { useResumeStore } from "@/store/resumeStore";
+import ListInput from "./ListInput";
 
 export default function AchievementsLanguagesForm() {
   const { resume, setAchievements, setLanguages } = useResumeStore();
@@ -11,7 +12,8 @@ export default function AchievementsLanguagesForm() {
         <h2 className="card-title">Achievements</h2>
         <textarea
           rows={3}
-          placeholder="Ek line = ek achievement"
+          aria-label="Achievements"
+          placeholder="One achievement per line"
           value={resume.achievements.join("\n")}
           onChange={(e) => setAchievements(e.target.value.split("\n"))}
           className="field"
@@ -20,11 +22,11 @@ export default function AchievementsLanguagesForm() {
 
       <div>
         <h2 className="card-title">Languages</h2>
-        <input
-          placeholder="Comma se separate (e.g. English, Hindi)"
-          value={resume.languages.join(", ")}
-          onChange={(e) => setLanguages(e.target.value.split(",").map((s) => s.trim()).filter(Boolean))}
-          className="field"
+        <ListInput
+          aria-label="Languages"
+          placeholder="Comma-separated (e.g. English, Hindi)"
+          value={resume.languages}
+          onChange={setLanguages}
         />
       </div>
     </div>

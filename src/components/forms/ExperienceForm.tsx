@@ -1,9 +1,11 @@
 "use client";
 
 import { useResumeStore } from "@/store/resumeStore";
+import BulletList from "./BulletList";
+import EntryControls from "./EntryControls";
 
 export default function ExperienceForm() {
-  const { resume, addExperience, updateExperience, removeExperience } = useResumeStore();
+  const { resume, addExperience, updateExperience, removeExperience, moveEntry } = useResumeStore();
 
   return (
     <div className="card">
@@ -12,34 +14,47 @@ export default function ExperienceForm() {
         <button onClick={addExperience} className="btn btn-add">+ Add experience</button>
       </div>
 
+      {resume.experience.length === 0 && (
+        <p className="card-hint">No experience yet. Freshers can skip this and fill in Projects instead.</p>
+      )}
+
       <div className="grid gap-3">
-        {resume.experience.map((exp) => {
+        {resume.experience.map((exp, idx) => {
           const isCurrent = exp.endDate === "present";
           return (
             <div key={exp.id} className="entry grid gap-3">
-              <div className="grid grid-cols-2 gap-3">
-                <input
-                  placeholder="Job title"
-                  value={exp.title}
-                  onChange={(e) => updateExperience(exp.id, { title: e.target.value })}
-                  className="field"
-                />
-                <input
-                  placeholder="Company"
-                  value={exp.company}
-                  onChange={(e) => updateExperience(exp.id, { company: e.target.value })}
-                  className="field"
-                />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <label className="field-label">
+                  Job title
+                  <input
+                    placeholder="e.g. Frontend Engineer"
+                    value={exp.title}
+                    onChange={(e) => updateExperience(exp.id, { title: e.target.value })}
+                    className="field"
+                  />
+                </label>
+                <label className="field-label">
+                  Company
+                  <input
+                    placeholder="e.g. Acme Corp"
+                    value={exp.company}
+                    onChange={(e) => updateExperience(exp.id, { company: e.target.value })}
+                    className="field"
+                  />
+                </label>
               </div>
 
-              <input
-                placeholder="Location (optional)"
-                value={exp.location ?? ""}
-                onChange={(e) => updateExperience(exp.id, { location: e.target.value })}
-                className="field"
-              />
+              <label className="field-label">
+                Location (optional)
+                <input
+                  placeholder="e.g. Bengaluru, India"
+                  value={exp.location ?? ""}
+                  onChange={(e) => updateExperience(exp.id, { location: e.target.value })}
+                  className="field"
+                />
+              </label>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <label className="field-label">
                   Start date
                   <input
@@ -72,19 +87,20 @@ export default function ExperienceForm() {
                 I currently work here
               </label>
 
-              <label className="field-label">
-                Bullets (ek line = ek bullet)
-                <textarea
-                  rows={5}
-                  value={exp.bullets.join("\n")}
-                  onChange={(e) => updateExperience(exp.id, { bullets: e.target.value.split("\n") })}
-                  className="field"
-                />
-              </label>
+              <BulletList
+                bullets={exp.bullets}
+                onChange={(bullets) => updateExperience(exp.id, { bullets })}
+                context={{ title: exp.title, company: exp.company }}
+              />
 
-              <button onClick={() => removeExperience(exp.id)} className="btn-danger-text justify-self-end">
-                Remove
-              </button>
+              <EntryControls
+                index={idx}
+                count={resume.experience.length}
+                onMove={(to) => moveEntry("experience", idx, to)}
+                onRemove={() => removeExperience(exp.id)}
+                label="experience"
+                confirm={!!(exp.title || exp.company || exp.bullets.some((b) => b.trim()))}
+              />
             </div>
           );
         })}

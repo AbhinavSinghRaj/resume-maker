@@ -2,10 +2,11 @@
 
 import { useState } from "react";
 import { useResumeStore } from "@/store/resumeStore";
+import { confirmReplace } from "@/lib/resumeUtils";
 
 export default function JDPanel() {
-  const { jdAnalysis, setJDAnalysis, masterProfile, setMasterProfile, setResume } = useResumeStore();
-  const [jdText, setJdText] = useState("");
+  const { resume, jdAnalysis, setJDAnalysis, masterProfile, setMasterProfile, replaceResume, jdText, setJdText } =
+    useResumeStore();
   const [loadingAnalyze, setLoadingAnalyze] = useState(false);
   const [loadingGenerate, setLoadingGenerate] = useState(false);
   const [error, setError] = useState("");
@@ -23,13 +24,14 @@ export default function JDPanel() {
       if (!res.ok) throw new Error(data.error || "Failed");
       setJDAnalysis(data);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Kuch gadbad hui");
+      setError(e instanceof Error ? e.message : "Something went wrong");
     } finally {
       setLoadingAnalyze(false);
     }
   }
 
   async function handleGenerate() {
+    if (!confirmReplace(resume, "Generating a resume")) return;
     setError("");
     setLoadingGenerate(true);
     try {
@@ -40,25 +42,26 @@ export default function JDPanel() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed");
-      setResume(data);
+      replaceResume(data);
       if (!jdAnalysis) await handleAnalyze();
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Kuch gadbad hui");
+      setError(e instanceof Error ? e.message : "Something went wrong");
     } finally {
       setLoadingGenerate(false);
     }
   }
 
   return (
-    <div className="card">
+    <div id="jd" className="card anchor">
       <div className="mb-4">
-        <h2 className="card-title">1. Apna Master Profile likh</h2>
+        <h2 className="card-title">1. Write your master profile</h2>
         <p className="card-hint">
-          Apni saari companies, roles, projects, skills, education jaisa yaad aaye waisa likh de. Formatting ki tension mat le.
+          List every company, role, project, skill and degree you can remember — in your own words. Don&apos;t worry about formatting.
         </p>
         <textarea
           rows={7}
-          placeholder="e.g. 8 years react/next.js developer, Crain Communications me contract pe kaam karta hu…"
+          aria-label="Master profile"
+          placeholder="e.g. 8 years as a React/Next.js developer. Contract role at Acme since 2022, built the checkout flow…"
           value={masterProfile}
           onChange={(e) => setMasterProfile(e.target.value)}
           className="field"
@@ -66,11 +69,12 @@ export default function JDPanel() {
       </div>
 
       <div className="mb-4">
-        <h2 className="card-title">2. Job Description paste kar</h2>
-        <p className="card-hint">Jis role ke liye resume banana hai, uski JD daal de.</p>
+        <h2 className="card-title">2. Paste the job description</h2>
+        <p className="card-hint">The posting for the role you&apos;re applying to.</p>
         <textarea
           rows={7}
-          placeholder="Job description yahan paste kar…"
+          aria-label="Job description"
+          placeholder="Paste the job description here…"
           value={jdText}
           onChange={(e) => setJdText(e.target.value)}
           className="field"
@@ -83,7 +87,7 @@ export default function JDPanel() {
           disabled={loadingGenerate || masterProfile.trim().length < 30 || jdText.trim().length < 20}
           className="btn btn-primary w-full"
         >
-          {loadingGenerate ? "Resume generate ho raha hai…" : "Generate resume from this JD"}
+          {loadingGenerate ? "Generating your resume…" : "Generate resume from this JD"}
         </button>
 
         <button
@@ -91,14 +95,14 @@ export default function JDPanel() {
           disabled={loadingAnalyze || jdText.trim().length < 20}
           className="btn btn-ghost w-full"
         >
-          {loadingAnalyze ? "Analyzing…" : "Sirf keyword match dekhna hai"}
+          {loadingAnalyze ? "Analyzing…" : "Just check keyword match"}
         </button>
       </div>
 
       {error && <p className="mt-2 text-sm" style={{ color: "var(--danger)" }}>{error}</p>}
       {jdAnalysis && (
         <p className="mt-2 text-sm" style={{ color: "var(--accent-strong)" }}>
-          &quot;{jdAnalysis.jobTitle}&quot; ke {jdAnalysis.keywordsWithVariants.length} keywords mile.
+          Found {jdAnalysis.keywordsWithVariants.length} keywords for &quot;{jdAnalysis.jobTitle}&quot;.
         </p>
       )}
     </div>
